@@ -9,9 +9,10 @@ class WaitForElementTools:
     def __init__(self, driver):
         self.driver = driver
 
-    def wait_for_element_to_be_present(self, selector, timeout=30):
+    def wait_for_element_to_be_present(self, selector, driver=None, timeout=30):
+        driver = driver or self.driver
         try:
-            element = WebDriverWait(driver=self.driver, timeout=timeout).until(ec.presence_of_element_located(selector))
+            element = WebDriverWait(driver=driver, timeout=timeout).until(ec.presence_of_element_located(selector))
             if not element:
                 raise NoSuchElementException
             ElementsTools.take_screenshot(driver=self.driver)
@@ -19,11 +20,13 @@ class WaitForElementTools:
         except Exception as e:
             ElementsTools.take_screenshot(driver=self.driver, filename='element_not_found')
             print("element {} not found".format(selector))
+            print(e)
             raise e
 
-    def wait_for_element_to_be_clickable(self, selector, timeout=30):
+    def wait_for_element_to_be_clickable(self, selector, driver=None, timeout=30):
+        driver = driver or self.driver
         try:
-            element = WebDriverWait(driver=self.driver, timeout=timeout).until(ec.element_to_be_clickable(selector))
+            element = WebDriverWait(driver=driver, timeout=timeout).until(ec.element_to_be_clickable(selector))
             if not element:
                 raise NoSuchElementException
             ElementsTools.take_screenshot(driver=self.driver)
@@ -31,11 +34,13 @@ class WaitForElementTools:
         except Exception as e:
             ElementsTools.take_screenshot(driver=self.driver, filename='element_not_found')
             print("element {} not found".format(selector))
+            print(e)
             raise e
 
-    def wait_for_elements_to_be_present(self, selector, timeout=30):
+    def wait_for_elements_to_be_present(self, selector, driver=None, timeout=30):
+        driver = driver or self.driver
         try:
-            elements = WebDriverWait(driver=self.driver, timeout=timeout).\
+            elements = WebDriverWait(driver=driver, timeout=timeout).\
                 until(ec.visibility_of_all_elements_located(selector))
             if not elements:
                 raise NoSuchElementException
@@ -44,4 +49,5 @@ class WaitForElementTools:
         except Exception as e:
             ElementsTools.take_screenshot(driver=self.driver, filename='element_not_found')
             print("elements {} not found".format(selector))
+            print(e)
             raise e
