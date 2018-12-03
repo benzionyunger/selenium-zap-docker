@@ -1,4 +1,4 @@
-from selenium.webdriver.common.by import By
+from appium.webdriver.common.mobileby import MobileBy as By
 
 
 class ExamplePage:
