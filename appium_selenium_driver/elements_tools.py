@@ -1,6 +1,6 @@
 import os
-from time import ctime
 from pathlib import Path
+from time import ctime
 
 
 class ElementsTools:
@@ -30,7 +30,7 @@ class ElementsTools:
     @staticmethod
     def take_screenshot(driver, filename=None):
         pic_path = Path(os.environ.get('CURRENT_LOGS_DIR', '_'.join(ctime().replace(':', '.').split())))
-        filename = pic_path / "{}.png".format(filename) if filename else pic_path / "{}.png".\
+        filename = pic_path / "{}.png".format(filename) if filename else pic_path / "{}.png". \
             format('_'.join(ctime().replace(':', '.').split()))
         driver.save_screenshot(filename=str(filename))
 
@@ -48,3 +48,38 @@ class ElementsTools:
             self.take_screenshot(driver=self.driver)
             return True
         return False
+
+    # work only with appium driver not selenium
+    def scroll_from_element_to_element_by_selector(self, from_element_selector=None, to_element_selector=None):
+        from_element = self.wait.wait_for_element_to_be_present(selector=from_element_selector)
+        to_element = self.wait.wait_for_element_to_be_present(selector=to_element_selector)
+        self.driver.scroll(from_element, to_element)
+
+    # work only with appium driver not selenium
+    def scroll_from_element_to_element(self, from_element=None, to_element=None):
+        self.driver.scroll(from_element, to_element)
+
+    def swipe_to_element(self, selector):
+        page_source = self.driver.page_source
+        while True:
+
+            try:
+                return self.wait.wait_for_element_to_be_present(selector=selector, timeout=10)
+            except Exception:
+                self.driver.swipe(100, 700, 100, 150)
+                new = self.driver.page_source
+                if new == page_source:
+                    break
+                page_source = new
+        return False
+
+    # work only with appium driver not selenium
+    def scroll_to_end_of_page(self):
+
+        page_source = self.driver.page_source
+        while True:
+            self.driver.swipe(100, 700, 100, 150)
+            new = self.driver.page_source
+            if new == page_source:
+                break
+            page_source = new
