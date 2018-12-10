@@ -1,11 +1,13 @@
 import os
 
-from appium_selenium_driver.appium_selenium_driver import AndroidDriver
+from appium_selenium_driver.appium_selenium_driver import Driver
 from appium_selenium_driver.report_tools.create_logs_dir import LogsDir
 from appium_selenium_driver.report_tools.logcat_file_report import LogcatFile
+# need this import for all classes that inheritance
+from appium_selenium_driver.desired_capabilities.android_desired_capabilities import *
+# need this import for all classes that inheritance
 from import_pages import *
-
-
+# for android test locally
 if os.environ.get("LOCAL_TEST", None):
     app_path = "C:\\Users\\elnatan\\Downloads\\emarald-debug.apk"
 else:
@@ -15,18 +17,19 @@ else:
 log_reports = LogsDir(path_to_main_dir_log=os.environ.get('WORKSPACE', None))
 log_reports.create_main_logs_dir()
 
+desired_caps = "....select from desired_capabilities file...."
+''''
 
-desired_caps = {'platformName': 'Android',
-                'platformVersion': '6.0',
-                'deviceName': 'Android Emulator',
-                'app': app_path,
-                'appPackage': 'com.leadermes.managerapp',
-                'appActivity': 'com.leadermes.emerald.activities.MainActivity'}
+example for android to add path of apk
+desired_caps["app"] = emulator_desired_caps["app"].format(app_path)
+'''
 
 
-class TestLogin(object):
+class BaseTestClass:
     logcat_file = None
     driver = None
+    # you need to override this parameter on inheritance
+    desired_caps = desired_caps
 
     def setup(self):
         pass
@@ -36,22 +39,14 @@ class TestLogin(object):
         # make current test logs and screenshots dir
         log_reports.create_test_log_dir(dir_name=test_name)
         # create and open logcat file with filter option
-        self.logcat_file = LogcatFile(file_path=log_reports.current_test_dir, filter_by="replace with what you want package.....")
+        self.logcat_file = LogcatFile(file_path=log_reports.current_test_dir, filter_by="replace with what you want "
+                                                                                        "package.....")
         self.logcat_file.open_logcat_file()
         # start webdriver for current test
-        self.driver = AndroidDriver(desired_capabilities=desired_caps)
+        self.driver = Driver(desired_capabilities=desired_caps)
 
     def teardown_method(self):
         # stop logcat process
         self.logcat_file.stop_logcat()
         # stop webdriver for current test
         self.driver.driver.quit()
-
-    def test_example_test(self):
-        self.driver.tools.wait_and_click(ExamplePage.permission_allow_btn)
-        self.driver.tools.wait_and_click(ExamplePage.add_user_btn)
-        self.driver.tools.set_text(ExamplePage.add_user_btn, "dev")
-        self.driver.tools.set_text(ExamplePage.permission_allow_btn, "ved")
-        self.driver.tools.set_text(ExamplePage.machine_container_in_department, "ravtech2")
-        assert self.driver.wait.wait_for_element_to_be_present(ExamplePage.add_user_btn)
-

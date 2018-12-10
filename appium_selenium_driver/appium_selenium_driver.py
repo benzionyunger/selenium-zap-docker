@@ -4,7 +4,7 @@ from appium_selenium_driver.wait_for_elements_tools import WaitForElementTools
 from appium_selenium_driver.elements_tools import ElementsTools
 
 
-class AndroidDriver:
+class Driver:
 
     def __init__(self, address='http://localhost:4723/wd/hub', desired_capabilities=None, browser_profile=None, remote=True):
         if browser_profile == "chrome" and not remote:
