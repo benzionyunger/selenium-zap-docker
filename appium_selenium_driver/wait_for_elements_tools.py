@@ -27,16 +27,11 @@ class WaitForElementTools:
 
     def wait_for_element_to_be_invisible(self, selector, driver=None, timeout=30):
         driver = driver or self.driver
-        try:
-            ElementsTools.take_screenshot(driver=self.driver)
-            element = WebDriverWait(driver=driver, timeout=timeout).until(ec.invisibility_of_element(selector))
-        except Exception as e:
-            ElementsTools.take_screenshot(driver=self.driver, filename='element_not_found')
-            print("element {} found exception: {}".format(selector, e))
-            raise e
-        if not element:
-            raise Exception("element still visible")
-        return True
+        ElementsTools.take_screenshot(driver=self.driver)
+        visibility = WebDriverWait(driver=driver, timeout=timeout). \
+            until(ec.invisibility_of_element_located(selector))
+        ElementsTools.take_screenshot(driver=self.driver)
+        return visibility
 
     def wait_for_element_to_be_clickable(self, selector, driver=None, timeout=30, raise_exception=True):
         driver = driver or self.driver
@@ -76,10 +71,3 @@ class WaitForElementTools:
         new_selector = (by, selector_new.format(text=text_contain))
         self.wait_for_elements_to_be_present(selector=new_selector, driver=driver, timeout=timeout,
                                              raise_exception=raise_exception)
-
-    def wait_for_element_to_be_invisible(self, selector, driver=None, timeout=30):
-        driver = driver or self.driver
-        return WebDriverWait(driver=driver, timeout=timeout). \
-            until(ec.invisibility_of_element_located(selector))
-
-

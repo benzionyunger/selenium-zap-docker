@@ -25,3 +25,8 @@ class LogsDir:
         test_log_dir.mkdir()
         os.environ['CURRENT_LOGS_DIR'] = str(test_log_dir)
         self.current_test_dir = str(test_log_dir)
+
+    @staticmethod
+    def remove_current_test_dir(dir_name=None):
+        dir_name = dir_name or os.environ.get('CURRENT_LOGS_DIR', None)
+        shutil.rmtree(str(dir_name), ignore_errors=True)

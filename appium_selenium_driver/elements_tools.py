@@ -9,11 +9,13 @@ class ElementsTools:
         self.driver = driver
         self.wait = wait_element
 
-    def wait_and_click(self, selector, driver=None, timeout=30):
+    def wait_and_click(self, selector, driver=None, timeout=30, raise_exception=True):
         driver = driver or self.driver
-        element = self.wait.wait_for_element_to_be_clickable(selector=selector, driver=driver, timeout=timeout)
+        element = self.wait.wait_for_element_to_be_clickable(selector=selector, driver=driver, timeout=timeout,
+                                                             raise_exception=raise_exception)
         self.take_screenshot(driver=self.driver)
-        return element.click()
+        if element:
+            return element.click()
 
     def get_text_from_element(self, selector, driver=None, timeout=30):
         driver = driver or self.driver
@@ -59,26 +61,26 @@ class ElementsTools:
     def scroll_from_element_to_element(self, from_element=None, to_element=None):
         self.driver.scroll(from_element, to_element)
 
-    def swipe_to_element(self, selector):
+    # noinspection PyBroadException
+    def scroll_to_element(self, selector, from_x=100, from_y=900, to_x=100, to_y=400):
         page_source = self.driver.page_source
         while True:
-
             try:
-                return self.wait.wait_for_element_to_be_present(selector=selector, timeout=10)
+                element = self.wait.wait_for_element_to_be_present(selector=selector, timeout=10)
+                if element:
+                    return element
             except Exception:
-                self.driver.swipe(100, 700, 100, 150)
+                self.driver.swipe(from_x, from_y, to_x, to_y)
                 new = self.driver.page_source
                 if new == page_source:
                     break
                 page_source = new
         return False
 
-    # work only with appium driver not selenium
-    def scroll_to_end_of_page(self):
-
+    def scroll_to_end_of_page(self, from_x=100, from_y=900, to_x=100, to_y=400):
         page_source = self.driver.page_source
         while True:
-            self.driver.swipe(100, 700, 100, 150)
+            self.driver.swipe(from_x, from_y, to_x, to_y)
             new = self.driver.page_source
             if new == page_source:
                 break
