@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 from time import ctime
+from appium_selenium_driver.elements_tools.selenium_elements_tools import SeleniumElementsTools
 
 
-class ElementsTools:
+class AppiumElementsTools(SeleniumElementsTools):
 
     def __init__(self, driver, wait_element):
-        self.driver = driver
-        self.wait = wait_element
+        SeleniumElementsTools.__init__(driver=driver,wait_element=wait_element)
 
     def wait_and_click(self, selector, driver=None, timeout=30, raise_exception=True):
         driver = driver or self.driver
