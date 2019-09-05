@@ -1,0 +1,30 @@
+FROM python:3.7-alpine3.8
+
+# update apk repo
+RUN echo "http://dl-4.alpinelinux.org/alpine/v3.8/main" >> /etc/apk/repositories && \
+    echo "http://dl-4.alpinelinux.org/alpine/v3.8/community" >> /etc/apk/repositories
+
+# install chromedriver
+RUN apk update
+RUN apk add chromium chromium-chromedriver
+
+ARG debug
+ENV DEBUG=$debug
+
+ARG client_name
+ENV CLIENT_NAME=${client_name}
+
+ARG base_url
+ENV BASE_URL=${base_url}
+
+RUN mkdir /junit
+RUN mkdir /selenium
+RUN mkdir /selenium/logs-dir
+
+COPY requirments.txt /selenium/requirments.txt
+WORKDIR /selenium
+RUN pip install -r requirments.txt
+COPY import_pages.py /selenium/import_pages.py
+COPY appium_selenium_driver /selenium/appium_selenium_driver
+COPY pages /selenium/pages
+COPY tests /selenium/tests

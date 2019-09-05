@@ -1,0 +1,26 @@
+version: "3"
+services:
+  python-tests:
+    ipc: "host"
+    build:
+      context: ../
+      args:
+        BASE_URL: ${BASE_URL}
+        REMOTE: true
+
+      dockerfile: ./docker/Dockerfile
+    environment:
+      - WORKSPACE=/selenium
+    depends_on:
+      - selenium
+    container_name: python-tests
+    command: >
+      sh -c "pytest -sv tests/ --junitxml=/junit/result.xml"
+
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium-server
+    ports:
+      - 4444:4444
+    volumes:
+      - /dev/shm:/dev/shm

@@ -1,0 +1,14 @@
+version: "3"
+services:
+  python-tests:
+    ipc: "host"
+    build:
+      context: ../
+      args:
+        base_url: ${baseUrl}
+      dockerfile: ./docker/Dockerfile
+    environment:
+      - WORKSPACE=/selenium
+    container_name: python-tests
+    command: >
+      sh -c "pytest -sv tests/ --junitxml=/junit/result.xml"
