@@ -8,7 +8,7 @@ services:
         BASE_URL: ${BASE_URL}
         REMOTE: true
 
-      dockerfile: ./docker/Dockerfile
+      dockerfile: Dockerfile-python-selenium-remote
     environment:
       - WORKSPACE=/selenium
     depends_on:

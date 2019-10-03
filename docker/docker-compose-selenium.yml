@@ -6,7 +6,7 @@ services:
       context: ../
       args:
         base_url: ${baseUrl}
-      dockerfile: ./docker/Dockerfile
+      dockerfile: docker/Dockerfile-selenium-local-alpine
     environment:
       - WORKSPACE=/selenium
     container_name: python-tests
