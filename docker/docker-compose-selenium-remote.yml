@@ -24,3 +24,24 @@ services:
       - 4444:4444
     volumes:
       - /dev/shm:/dev/shm
+
+  zap:
+    image: owasp/zap2docker-weekly:latest
+    ports:
+      - 8081:8081
+    user: zap
+    command: [
+      "zap-x.sh",
+      #      "zap.sh",
+      #      "zap-webswing.sh",
+      "-daemon",
+      "-host", "0.0.0.0",
+      "-port", "8081",
+      "-config", "api.disablekey=true",
+      "-config", "api.addrs.addr.name=.*",
+      "-config", "api.addrs.addr.regex=true",
+      "-config scanner.attackOnStart=true",
+      "-config view.mode=attack"
+      #      "-addoninstall FOOXYZ",
+      #      "-addonupdate"
+    ]

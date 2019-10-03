@@ -1,5 +1,6 @@
 from selenium.webdriver.chrome.options import Options
 import os
+from   selenium import webdriver
 
 selenium_mobile_view = {'browserName': 'chrome',
                                        'version': '',
@@ -13,10 +14,44 @@ selenium_mobile_view = {'browserName': 'chrome',
                                            'extensions': [], 'args': []}
                                        }
 
-selenium_mobile_view_for_lighthouse = {'browserName': 'chrome', 'version': '', 'platform': 'ANY',
-     'goog:chromeOptions': {'mobileEmulation': {'deviceName': 'iPhone 6'},
-                            'extensions': [],
-                            'args': ['user-agent=I LIKE CHOCOLATE',
-                                     f"--remote-debugging-port={os.environ.get('PORT', '5555')}",
-                                     '--headless',
-                                     '--disable-infobars', '--no-sandbox', '--disable-gpu']}}
+selenium_mobile_view_for_lighthouse = {
+                                        'browserName': 'chrome',
+                                        'version': '',
+                                        'platform': 'ANY',
+                                        'goog:chromeOptions': {
+                                           'mobileEmulation': {
+                                               'deviceName': 'iPhone 6'
+                                           },
+                                            'extensions': [],
+                                            'args': [
+                                                'user-agent=I LIKE CHOCOLATE',
+                                                f"--remote-debugging-port={os.environ.get('PORT', '5555')}",
+                                                '--headless',
+                                                '--disable-infobars',
+                                                '--no-sandbox',
+                                                '--disable-gpu'
+                                            ]
+                                        }
+                                       }
+
+selenium_proxied_view = {
+                            'browserName': 'chrome',
+                            'version': '',
+                            'platform': 'ANY',
+                            'acceptSslCerts':True,
+                            'chromeOptions': {
+                               'args': [
+                                   '--headless',
+                                   "--no-sandbox",
+                                   "--disable-gpu",
+                                   "--allow-running-insecure-content",
+                                   "--ignore-certificate-errors"
+                               ],
+                               'debuggerAddress': 'localhost: 5555',
+                               'extensions': []
+                            }
+}
+capabilities = webdriver.DesiredCapabilities.CHROME
+prox.add_to_capabilities(capabilities)
+
+selenium_zap_proxy_view = {}
