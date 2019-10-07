@@ -6,42 +6,50 @@ services:
       context: ../
       args:
         BASE_URL: ${BASE_URL}
-        REMOTE: true
+#        REMOTE: true
 
-      dockerfile: Dockerfile-python-selenium-remote
+      dockerfile: ./docker/Dockerfile-python-selenium-remote
     environment:
-      - WORKSPACE=/selenium
+     - WORKSPACE=/selenium
     depends_on:
       - selenium
+    ports:
+      - 5555:5555
+    volumes:
+      - "${PWD}/zap_reports:/selenium/reports:rw"
     container_name: python-tests
     command: >
-      sh -c "pytest -sv tests/ --junitxml=/junit/result.xml"
+      bash -c "sleep 10 && python -m pytest -sv tests/ --junitxml=/junit/result.xml"
 
   selenium:
     image: selenium/standalone-chrome
     container_name: selenium-server
+    depends_on:
+      - zap
     ports:
       - 4444:4444
+    environment:
+      - http_proxy=172.23.0.2:8081
+      - https_proxy=172.23.0.2:8081
     volumes:
       - /dev/shm:/dev/shm
 
   zap:
     image: owasp/zap2docker-weekly:latest
+    container_name: zap
     ports:
       - 8081:8081
     user: zap
+    volumes:
+      - "${PWD}/zap_reports:/zap/reports:rw"
     command: [
       "zap-x.sh",
-      #      "zap.sh",
-      #      "zap-webswing.sh",
       "-daemon",
       "-host", "0.0.0.0",
       "-port", "8081",
       "-config", "api.disablekey=true",
       "-config", "api.addrs.addr.name=.*",
       "-config", "api.addrs.addr.regex=true",
-      "-config scanner.attackOnStart=true",
-      "-config view.mode=attack"
-      #      "-addoninstall FOOXYZ",
-      #      "-addonupdate"
+      "-config", "scanner.attackOnStart=true",
+      "-config", "view.mode=attack"
     ]

@@ -45,13 +45,10 @@ selenium_proxied_view = {
                                    "--no-sandbox",
                                    "--disable-gpu",
                                    "--allow-running-insecure-content",
-                                   "--ignore-certificate-errors"
+                                   "--ignore-certificate-errors",
+                                   "--proxy-server=172.23.0.2:8081"
                                ],
-                               'debuggerAddress': 'localhost: 5555',
+                               # 'debuggerAddress': 'localhost: 5555',
                                'extensions': []
                             }
 }
-capabilities = webdriver.DesiredCapabilities.CHROME
-prox.add_to_capabilities(capabilities)
-
-selenium_zap_proxy_view = {}

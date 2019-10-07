@@ -1,7 +1,7 @@
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
-from appium_selenium_driver.elements_tools import ElementsTools
+from appium_selenium_driver.elements_tools.selenium_elements_tools import SeleniumElementsTools as ElementsTools
 
 
 class WaitForElementTools:

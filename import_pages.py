@@ -1,3 +1,2 @@
-
-
-from pages.example_page import ExamplePage
+from pages.home import *
+from pages.dashboard_page import *
