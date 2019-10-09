@@ -21,7 +21,8 @@ from import_pages import *
 # make main log dir
 log_reports = LogsDir(path_to_main_dir_log=os.environ.get('WORKSPACE', None))
 log_reports.create_main_logs_dir()
-site_url = "https://test.ravtech.co.il"
+site_url = os.getenv("SITE_URL")
+# site_url = "https://test.ravtech.co.il"
 
 # desired_caps = selenium_proxied_view
 desired_caps = selenium_proxied_view
@@ -32,11 +33,11 @@ desired_caps["app"] = emulator_desired_caps["app"].format(app_path)
 
 
 class BaseTestClass:
-    prox = Proxy()
-    prox.proxy_type = ProxyType.MANUAL
-    prox.http_proxy = "172.23.0.2:8081"
-    prox.socks_proxy = "172.23.0.2:8081"
-    prox.ssl_proxy = "172.23.0.2:8081"
+    # prox = Proxy()
+    # prox.proxy_type = ProxyType.MANUAL
+    # prox.http_proxy = "172.23.0.2:8081"
+    # prox.socks_proxy = "172.23.0.2:8081"
+    # prox.ssl_proxy = "172.23.0.2:8081"
 
 
     logcat_file = None
@@ -80,8 +81,8 @@ class BaseTestClass:
         proxy='172.23.0.2:8081'
         apikey = ""
         zap = ZAPv2(apikey=apikey,proxies={"http":"http://172.23.0.2:8081", "https": "http://172.23.0.2:8081"})
-        alertThreshold = 'Medium'
-        attackStrength = 'Insane'
+        alertThreshold = os.getenv("ALERT_THRESHOLD")
+        attackStrength = os.getenv("ATTACK_STRENGTH")
         scan = zap.spider.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
         zap.ascan.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
         ascan = zap.ascan
