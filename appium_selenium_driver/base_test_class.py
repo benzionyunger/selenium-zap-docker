@@ -82,7 +82,7 @@ class BaseTestClass:
         apikey = ""
         zap = ZAPv2(apikey=apikey,proxies={"http":"http://172.23.0.2:8081", "https": "http://172.23.0.2:8081"})
         alertThreshold = os.getenv("ALERT_THRESHOLD")
-        attackStrength = os.getenv("ATTACK_STREGNTH")
+        attackStrength = os.getenv("ATTACK_STRENGTH")
         scan = zap.spider.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
         zap.ascan.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
         ascan = zap.ascan
