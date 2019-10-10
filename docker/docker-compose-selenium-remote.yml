@@ -4,10 +4,10 @@ services:
     ipc: "host"
     build:
       context: ../
-      args:
-        SITE_URL: ${SITE_URL}
-        ALERT_THRESHOLD: ${ALERT_THRESHOLD}
-        ATTACK_STRENGTH: ${ATTACK_STRENGTH}
+#      args:
+#        SITE_URL: ${SITE_URL}
+#        ALERT_THRESHOLD: ${ALERT_THRESHOLD}
+#        ATTACK_STRENGTH: ${ATTACK_STRENGTH}
 #        REMOTE: true
 
       dockerfile: ./docker/Dockerfile-python-selenium-remote
@@ -16,6 +16,7 @@ services:
      - SITE_URL=${SITE_URL}
      - ALERT_THRESHOLD=${ALERT_THRESHOLD}
      - ATTACK_STRENGTH=${ATTACK_STRENGTH}
+     - ZAP_IP=${docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap}
     depends_on:
       - selenium-server
     ports:
@@ -34,8 +35,8 @@ services:
     ports:
       - 4444:4444
     environment:
-      - http_proxy=172.23.0.2:8081
-      - https_proxy=172.23.0.2:8081
+      - http_proxy=${docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap}:8081
+      - https_proxy=${docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap}:8081
     volumes:
       - /dev/shm:/dev/shm
 
@@ -52,6 +53,10 @@ services:
       "-daemon",
       "-host", "0.0.0.0",
       "-port", "8081",
+      "-addoninstall", "Active scanner rules (alpha)",
+      "-addoninstall", "Active scanner rules (beta)",
+      "-addoninstall", "Passive scanner rules (alpha)",
+      "-addoninstall", "Passive scanner rules (beta)",
       "-config", "api.disablekey=true",
       "-config", "api.addrs.addr.name=.*",
       "-config", "api.addrs.addr.regex=true",

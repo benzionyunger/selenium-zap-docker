@@ -78,9 +78,12 @@ class BaseTestClass:
         #     log_reports.remove_current_test_dir()
 
     def run_zap(self):
-        proxy='172.23.0.2:8081'
+        zap_ip = os.getenv("ZAP_IP")
+        proxy_address=f'"http://{zap_ip}:8081"'
+        # proxy_ip='172.23.0.2:8081'
+
         apikey = ""
-        zap = ZAPv2(apikey=apikey,proxies={"http":"http://172.23.0.2:8081", "https": "http://172.23.0.2:8081"})
+        zap = ZAPv2(apikey=apikey,proxies={"http":proxy_address, "https": proxy_address})
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
         scan = zap.spider.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
