@@ -42,26 +42,4 @@ services:
     volumes:
       - /dev/shm:/dev/shm
 
-  zap:
-    image: owasp/zap2docker-weekly:latest
-    container_name: zap
-    ports:
-      - 8081:8081
-    user: zap
-    volumes:
-      - "${PWD}/zap_reports:/zap/reports:rw"
-    command: [
-      "zap-x.sh",
-      "-daemon",
-      "-host", "0.0.0.0",
-      "-port", "8081",
-      "-addoninstall", "Active scanner rules (alpha)",
-      "-addoninstall", "Active scanner rules (beta)",
-      "-addoninstall", "Passive scanner rules (alpha)",
-      "-addoninstall", "Passive scanner rules (beta)",
-      "-config", "api.disablekey=true",
-      "-config", "api.addrs.addr.name=.*",
-      "-config", "api.addrs.addr.regex=true",
-      "-config", "scanner.attackOnStart=true",
-      "-config", "view.mode=attack"
-    ]
+  
