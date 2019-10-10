@@ -5,7 +5,9 @@ services:
     build:
       context: ../
       args:
-        BASE_URL: ${BASE_URL}
+        SITE_URL: ${SITE_URL}
+        ALERT_THRESHOLD: ${ALERT_THRESHOLD}
+        ATTACK_STRENGTH: ${ATTACK_STRENGTH}
 #        REMOTE: true
 
       dockerfile: ./docker/Dockerfile-python-selenium-remote
