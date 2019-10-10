@@ -26,9 +26,8 @@ pipeline {
 //                     sh "docker image prune -a -f"
 //                     sh "docker pull owasp/zap2docker-stable"
 //                     sh "sudo chmod +x zap-docker.sh"
-
-                    sh "./docker/docker-compose -f docker-compose-selenium-remote.yml up -d"
-                    sh "./docker/docker-compose -f docker-compose-selenium-remote.yml down"
+                    sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d"
+                    sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
 
                     publishHTML([
     allowMissing: true,
