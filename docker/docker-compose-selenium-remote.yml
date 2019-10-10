@@ -13,6 +13,9 @@ services:
       dockerfile: ./docker/Dockerfile-python-selenium-remote
     environment:
      - WORKSPACE=/selenium
+     - SITE_URL=${SITE_URL}
+     - ALERT_THRESHOLD=${ALERT_THRESHOLD}
+     - ATTACK_STRENGTH=${ATTACK_STRENGTH}
     depends_on:
       - selenium-server
     ports:

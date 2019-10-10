@@ -65,8 +65,7 @@ class BaseTestClass:
 
         self.driver = Driver(address='http://selenium-server:4444/wd/hub', browser_profile="chrome",
                                  desired_capabilities=self.desired_caps)
-        print("site url: "+ os.getenv("SITE_URL"))
-        self.driver.driver.get(os.getenv("SITE_URL"))
+        self.driver.driver.get(site_url)
 
     def teardown_method(self):
         # stop logcat process
