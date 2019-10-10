@@ -27,7 +27,7 @@ pipeline {
 //                     sh "docker pull owasp/zap2docker-stable"
 //                     sh "sudo chmod +x zap-docker.sh"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d"
-                    sh "docker wait python-tests"
+                    sh "docker wait python-tests zap selenium-server"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
 
                     publishHTML([

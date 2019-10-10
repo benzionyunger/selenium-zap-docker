@@ -23,7 +23,7 @@ services:
     command: >
       bash -c "sleep 10 && python -m pytest -sv tests/ --junitxml=/junit/result.xml"
 
-  selenium:
+  selenium-server:
     image: selenium/standalone-chrome
     container_name: selenium-server
     depends_on:
