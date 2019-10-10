@@ -28,7 +28,7 @@ pipeline {
 //                     sh "sudo chmod +x zap-docker.sh"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d zap"
-                    sh "export ZAP_IP = $(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap)"
+                    sh "export ZAP_IP = ${docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap}"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
                     sh "docker wait python-tests zap selenium-server"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
