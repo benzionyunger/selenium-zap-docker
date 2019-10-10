@@ -27,24 +27,39 @@ pipeline {
 //                     sh "docker pull owasp/zap2docker-stable"
 //                     sh "sudo chmod +x zap-docker.sh"
                     sh "docker-compose -f ./docker/docker-compose-selenium-zap.yml up -d zap"
-                    sh "export ZAP_IP=\$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap)"
-                    sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
-                    sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
-                    sh "docker wait python-tests zap selenium-server"
-                    sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
+//                     sh "export ZAP_IP=\$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap)"
 
-                    publishHTML([
-    allowMissing: true,
-    alwaysLinkToLastBuild: true,
-    keepAll: true,
-    reportDir: './zap_reports',
-    reportFiles: 'test.html',
-    reportName: 'ZAP  Report',
-    reportTitles: ''
-  ])
                  }
              }
-         }
+
+             stage('build python tests and selenium'){
+                environment{
+                    ZAP_ID="""
+                            ${sh(\$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap))}
+                            """
+                    }
+                steps{
+
+                    script{
+                        sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
+                        sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
+                        sh "docker wait python-tests zap selenium-server"
+                        sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
+
+                        publishHTML([
+                            allowMissing: true,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: './zap_reports',
+                            reportFiles: 'test.html',
+                            reportName: 'ZAP  Report',
+                            reportTitles: ''
+                        ])
+                    }
+                }
+
+            }
+
     }
 //     post {
 //         always {
