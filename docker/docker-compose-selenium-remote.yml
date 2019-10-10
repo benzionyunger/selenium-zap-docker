@@ -32,8 +32,8 @@ services:
   selenium-server:
     image: selenium/standalone-chrome
     container_name: selenium-server
-    depends_on:
-      - zap
+#    depends_on:
+#      - zap
     ports:
       - 4444:4444
     environment:
@@ -42,4 +42,3 @@ services:
     volumes:
       - /dev/shm:/dev/shm
 
-  
