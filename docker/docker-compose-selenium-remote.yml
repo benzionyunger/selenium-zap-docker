@@ -14,7 +14,7 @@ services:
     environment:
      - WORKSPACE=/selenium
     depends_on:
-      - selenium
+      - selenium-server
     ports:
       - 5555:5555
     volumes:
