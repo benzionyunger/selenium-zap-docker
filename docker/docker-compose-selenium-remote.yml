@@ -16,7 +16,9 @@ services:
      - SITE_URL=${SITE_URL}
      - ALERT_THRESHOLD=${ALERT_THRESHOLD}
      - ATTACK_STRENGTH=${ATTACK_STRENGTH}
-     - ZAP_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap)"
+     - ZAP_API=${ZAP_API}
+
+#     - ZAP_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap)"
     depends_on:
       - selenium-server
     ports:
@@ -35,8 +37,8 @@ services:
     ports:
       - 4444:4444
     environment:
-      - http_proxy=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap):8081
-      - https_proxy=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap):8081
+      - http_proxy=${ZAP_API}:8081
+      - https_proxy=${ZAP_API}:8081
     volumes:
       - /dev/shm:/dev/shm
 
