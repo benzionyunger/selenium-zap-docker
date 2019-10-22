@@ -35,7 +35,7 @@ pipeline {
              stage('build python tests and selenium'){
                 environment{
                     ZAP_ID="""
-                            sh($(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap))
+                            sh(${docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' zap})
                             """
                     }
                 steps{
