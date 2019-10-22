@@ -62,7 +62,7 @@ class BaseTestClass:
         # self.prox.add_to_capabilities(capabilities)
 
 
-        self.driver = Driver(address='http://selenium-server:4444/wd/hub', browser_profile="chrome",
+        self.driver = Driver(address='http://selenium:4444/wd/hub', browser_profile="chrome",
                                  desired_capabilities=self.desired_caps)
         self.driver.driver.get(site_url)
 

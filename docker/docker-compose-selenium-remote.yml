@@ -23,7 +23,7 @@ services:
 
   selenium:
     image: selenium/standalone-chrome
-    container_name: selenium-server
+    container_name: selenium
     depends_on:
       - zap
     ports:
