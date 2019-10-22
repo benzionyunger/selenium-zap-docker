@@ -37,6 +37,7 @@ pipeline {
             }
             steps{
                 script{
+                    sh "docker kill zap selenium-server python-tests || true"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
                     sh "docker wait python-tests"
