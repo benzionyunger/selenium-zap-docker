@@ -27,7 +27,7 @@ pipeline {
 
                  }
              }
-
+        }
          stage('build python tests and selenium'){
             environment{
                 ZAP_IP="""${sh(
@@ -55,5 +55,4 @@ pipeline {
             }
          }
     }
-}
 }
