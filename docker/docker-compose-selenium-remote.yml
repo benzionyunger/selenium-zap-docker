@@ -28,6 +28,8 @@ services:
     container_name: python-tests
     command: >
       bash -c "sleep 10 && python -m pytest -sv tests/ --junitxml=/junit/result.xml"
+    networks:
+      - ci
 
   selenium-server:
     image: selenium/standalone-chrome
@@ -41,4 +43,8 @@ services:
       - https_proxy=${ZAP_IP}:8081
     volumes:
       - /dev/shm:/dev/shm
+    networks:
+      - ci
+networks:
+  ci:
 
