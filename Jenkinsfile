@@ -38,7 +38,7 @@ pipeline {
             }
             steps{
                 script{
-                    sh "echo $ZAP_IP"
+                    sh "echo \"ZAP_IP \" $ZAP_IP"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
                     sh "docker wait python-tests"

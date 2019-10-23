@@ -29,7 +29,7 @@ services:
     command: >
       bash -c "sleep 10 && python -m pytest -sv tests/ --junitxml=/junit/result.xml"
     networks:
-      - ci
+      - docker_default
 
   selenium-server:
     image: selenium/standalone-chrome
@@ -44,7 +44,8 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     networks:
-      - ci
+      - docker_default
 networks:
-  ci:
+  docker_default:
+    external: true
 

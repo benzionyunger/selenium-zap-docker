@@ -23,7 +23,7 @@ services:
         "-config", "scanner.attackOnStart=true",
         "-config", "view.mode=attack"
       ]
-      networks:
-        - ci
-networks:
-  ci:
+#      networks:
+#        - ci
+#networks:
+#  ci:
