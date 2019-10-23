@@ -79,7 +79,8 @@ class BaseTestClass:
 
     def run_zap(self):
         zap_ip = os.getenv("ZAP_IP").strip("\n")
-        proxy_address=f'"http://{zap_ip}:8081"'
+        # proxy_address=f'"http://{zap_ip}:8081"'
+        proxy_address = 'http://zap:8081'
         # proxy_ip='172.23.0.2:8081'
 
         apikey = ""
