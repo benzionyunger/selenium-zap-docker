@@ -1,0 +1,69 @@
+version: "3"
+services:
+  zap:
+    image: owasp/zap2docker-weekly:latest
+    container_name: zap
+    ports:
+      - 8081:8081
+    user: zap
+    volumes:
+      - "${PWD}/zap_reports:/zap/reports:rw"
+    command: [
+      "zap-x.sh",
+      "-daemon",
+      "-host", "0.0.0.0",
+      "-port", "8081",
+      "-addoninstall", "Active scanner rules alpha",
+      "-addoninstall", "Active scanner rules beta",
+      "-addoninstall", "Passive scanner rules alpha",
+      "-addoninstall", "Passive scanner rules beta",
+      "-config", "api.disablekey=true",
+      "-config", "api.addrs.addr.name=.*",
+      "-config", "api.addrs.addr.regex=true",
+      "-config", "scanner.attackOnStart=true",
+      "-config", "view.mode=attack"
+    ]
+
+  python-tests:
+    ipc: "host"
+    build:
+      context: ../
+
+      dockerfile: ./docker/Dockerfile-python-selenium-remote
+    environment:
+     - WORKSPACE=/selenium
+     - SITE_URL=${SITE_URL}
+     - ALERT_THRESHOLD=${ALERT_THRESHOLD}
+     - ATTACK_STRENGTH=${ATTACK_STRENGTH}
+     - ZAP_IP=${ZAP_IP}
+
+    depends_on:
+      - selenium-server
+    ports:
+      - 5555:5555
+    volumes:
+      - "${PWD}/zap_reports:/selenium/reports:rw"
+    container_name: python-tests
+    command: >
+      bash -c "sleep 10 && python -m pytest -sv tests/ --junitxml=/junit/result.xml"
+#    networks:
+#      - docker_default
+
+  selenium-server:
+    image: selenium/standalone-chrome
+    container_name: selenium-server
+    depends_on:
+      - zap
+    ports:
+      - 4444:4444
+    environment:
+      - http_proxy=${ZAP_IP}:8081
+      - https_proxy=${ZAP_IP}:8081
+    volumes:
+      - /dev/shm:/dev/shm
+#    networks:
+#      - docker_default
+#networks:
+#  docker_default:
+#    external: true
+#
