@@ -42,6 +42,10 @@ pipeline {
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
                     sh "docker wait python-tests"
+                    sh "docker logs --details python-tests"
+                    sh "echo /"python logs/:/""
+                    sh "docker logs --details zap"
+                    sh "echo /"zap/:/""
                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
 
                     publishHTML([
