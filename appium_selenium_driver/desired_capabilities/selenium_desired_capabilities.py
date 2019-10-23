@@ -33,7 +33,8 @@ selenium_mobile_view_for_lighthouse = {
                                             ]
                                         }
                                        }
-zap_ip = os.getenv("ZAP_IP").strip("\n")
+# zap_ip = os.getenv("ZAP_IP").strip("\n")
+zap_ip = "http://zap"
 proxy_arg = f"--proxy-server={zap_ip}:8081"
 
 selenium_proxied_view = {
