@@ -78,7 +78,7 @@ class BaseTestClass:
         #     log_reports.remove_current_test_dir()
 
     def run_zap(self):
-        zap_ip = os.getenv("ZAP_IP")
+        zap_ip = os.getenv("ZAP_IP").strip("\n")
         proxy_address=f'"http://{zap_ip}:8081"'
         # proxy_ip='172.23.0.2:8081'
 
