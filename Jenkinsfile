@@ -34,7 +34,7 @@ pipeline {
                 ZAP_IP="""${sh(
                             returnStdout: true,
                             script: 'docker inspect --format=\'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' zap'
-                            )}"""
+                            )}""".trim()
             }
             steps{
                 script{
