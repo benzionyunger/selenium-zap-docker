@@ -87,8 +87,8 @@ class BaseTestClass:
         zap = ZAPv2(apikey=apikey,proxies={"http":proxy_address, "https": proxy_address})
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
-        scan = zap.spider.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
-        zap.ascan.scan(url="https://test.ravtech.co.il",recurse=True, apikey=apikey)
+        scan = zap.spider.scan(url=os.getenv("SITE_URL"),recurse=True, apikey=apikey)
+        zap.ascan.scan(url=os.getenv("SITE_URL"),recurse=True, apikey=apikey)
         ascan = zap.ascan
 
         ascan.remove_scan_policy(scanpolicyname="my_policy"
