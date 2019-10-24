@@ -187,7 +187,11 @@ class BaseTestClass:
         ## print('XML report')
         ## core.xmlreport()
         print('HTML report:')
-        pprint(core.htmlreport())
+        test_report = core.htmlreport()
+        pprint(test_report)
+        with open('/selenium/reports/test.html', 'w', encoding="utf8") as f:
+            f.write(test_report)
+
 
         if shutdownOnceFinished:
             # Shutdown ZAP once finished
