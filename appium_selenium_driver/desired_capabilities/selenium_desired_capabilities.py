@@ -33,11 +33,9 @@ selenium_mobile_view_for_lighthouse = {
                                             ]
                                         }
                                        }
-# zap_ip = os.getenv("ZAP_IP").strip("\n")
-zap_ip = "http://zap"
-proxy_arg = f"--proxy-server={zap_ip}:8081"
 
-selenium_proxied_view = {
+
+selenium_zap_proxy_view = {
                             'browserName': 'chrome',
                             'version': '',
                             'platform': 'ANY',
@@ -49,7 +47,7 @@ selenium_proxied_view = {
                                    "--disable-gpu",
                                    "--allow-running-insecure-content",
                                    "--ignore-certificate-errors",
-                                   proxy_arg
+                                   "--proxy-server=http://zap:8081"
                                ],
                                # 'debuggerAddress': 'localhost: 5555',
                                'extensions': []

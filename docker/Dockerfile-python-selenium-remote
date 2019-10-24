@@ -9,9 +9,9 @@ RUN mkdir /junit
 RUN mkdir /selenium
 RUN mkdir /selenium/logs-dir
 
-COPY requirments.txt /selenium/requirments.txt
+COPY requirements.txt /selenium/requirements.txt
 WORKDIR /selenium
-RUN pip install -r requirments.txt
+RUN pip install -r requirements.txt
 COPY import_pages.py /selenium/import_pages.py
 COPY appium_selenium_driver /selenium/appium_selenium_driver
 COPY pages /selenium/pages

@@ -37,35 +37,5 @@ pipeline {
                  }
              }
         }
-//          stage('build python tests and selenium'){
-//             environment{
-//                 ZAP_IP="""${sh(
-//                             returnStdout: true,
-//                             script: 'docker inspect --format=\'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' zap'
-//                             )}""".trim()
-//             }
-//             steps{
-//                 script{
-//                     sh "echo \"ZAP_IP \" $ZAP_IP"
-//                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml build python-tests"
-//                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml up -d selenium-server python-tests"
-//                     sh "docker wait python-tests"
-//                     sh "docker logs --details selenium-server"
-//                     sh "docker logs --details python-tests"
-//                     sh "docker logs --details zap"
-//                     sh "docker-compose -f ./docker/docker-compose-selenium-remote.yml down"
-//
-//                     publishHTML([
-//                         allowMissing: true,
-//                         alwaysLinkToLastBuild: true,
-//                         keepAll: true,
-//                         reportDir: './zap_reports',
-//                         reportFiles: 'test.html',
-//                         reportName: 'ZAP  Report',
-//                         reportTitles: ''
-//                     ])
-//                 }
-//             }
-//          }
     }
 }

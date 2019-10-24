@@ -1,6 +1,6 @@
 from appium_selenium_driver.base_test_class import *
 
-desired_caps = selenium_proxied_view
+desired_caps = selenium_zap_proxy_view
 
 
 class TestBase(BaseTestClass):

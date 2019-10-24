@@ -1,5 +1,6 @@
 import os
 import time
+from pprint import pprint
 from appium_selenium_driver.appium_selenium_driver import Driver
 from appium_selenium_driver.desired_capabilities.selenium_desired_capabilities import *
 from appium_selenium_driver.report_tools.create_logs_dir import LogsDir
@@ -12,22 +13,15 @@ from zapv2 import ZAPv2
 # need this import for all classes that inheritance
 from import_pages import *
 
-# for android test locally
-# if os.environ.get("LOCAL_TEST", None):
-#     app_path = "C:\\Users\\elnatan\\Downloads\\emarald-debug.apk"
-# else:
-#     app_path = "{}/app/build/outputs/apk/emarald/debug/app-emarald-debug.apk".format(os.environ.get('WORKSPACE', None))
-
 # make main log dir
-log_reports = LogsDir(path_to_main_dir_log=os.environ.get('WORKSPACE', None))
-log_reports.create_main_logs_dir()
-site_url = os.getenv("SITE_URL")
+# log_reports = LogsDir(path_to_main_dir_log=os.environ.get('WORKSPACE', None))
+# log_reports.create_main_logs_dir()
 
-desired_caps = selenium_proxied_view
-''''
-example for android to add path of apk
-desired_caps["app"] = emulator_desired_caps["app"].format(app_path)
-'''
+target = os.getenv("SITE_URL")
+alertThreshold = os.getenv("ALERT_THRESHOLD")
+attackStrength = os.getenv("ATTACK_STRENGTH")
+
+desired_caps = selenium_zap_proxy_view
 
 
 class BaseTestClass:
@@ -52,53 +46,184 @@ class BaseTestClass:
 
         self.driver = Driver(address='http://selenium-server:4444/wd/hub', browser_profile="chrome",
                                  desired_capabilities=self.desired_caps)
-        self.driver.driver.get(site_url)
+        self.driver.driver.get(target)
 
     def teardown_method(self):
+        self.driver.driver.quit()
+        self.run_zap()
+
         # stop logcat process
         # self.logcat_file.stop_logcat()
         # stop webdriver for current test
-        self.driver.driver.quit()
-        self.run_zap()
         # check if need to remove test in case of success test
         # if self.remove_logs_dir:
         #     log_reports.remove_current_test_dir()
 
-    def run_zap(self):
+    @staticmethod
+    def run_zap():
+        api_key=""
+
         proxy_address = 'http://zap:8081'
 
-        apikey = ""
-        zap = ZAPv2(apikey=apikey,proxies={"http":proxy_address, "https": proxy_address})
-        alertThreshold = os.getenv("ALERT_THRESHOLD")
-        attackStrength = os.getenv("ATTACK_STRENGTH")
-        scan = zap.spider.scan(url=os.getenv("SITE_URL"),recurse=True, apikey=apikey)
-        zap.ascan.scan(url=os.getenv("SITE_URL"),recurse=True, apikey=apikey)
+
+        isNewSession = True
+        sessionName = 'Near Test Session'
+        # useProxyChain = False
+        # useProxyScript = False
+        # useContextForScan = False
+        globalExcludeUrl = []
+        # You can specify other URL in order to help ZAP discover more site locations
+        # List can be empty
+        # applicationURL = ['http://localhost:8081/WebGoat/start.mvc',
+        #                   'http://localhost:8081/WebGoat/welcome.mvc',
+        #                   'http://localhost:8081/WebGoat/attack']
+
+        useScanPolicy = True
+        scanPolicyName = 'my_policy'
+        isWhiteListPolicy = False
+        ascanIds=[]
+        useAjaxSpider = True
+        shutdownOnceFinished = False
+
+        zap = ZAPv2(proxies={"http":proxy_address, "https": proxy_address}, apikey=api_key)
+        core = zap.core
+        if isNewSession:
+            pprint('Create ZAP session: ' + sessionName + ' -> ' +
+                   core.new_session(name=sessionName, overwrite=True))
+        else:
+            pprint('Load ZAP session: ' + sessionName + ' -> ' +
+                   core.load_session(name=sessionName))
+
+        # Configure ZAP global Exclude URL option
+        print('Add Global Exclude URL regular expressions:')
+        for regex in globalExcludeUrl:
+            pprint(regex + ' ->' + core.exclude_from_proxy(regex=regex))
+
+        pprint('Enable all passive scanners -> ' +
+               zap.pscan.enable_all_scanners())
+
         ascan = zap.ascan
 
-        ascan.remove_scan_policy(scanpolicyname="my_policy"
-                                     )
-
-        ascan.add_scan_policy(scanpolicyname="my_policy")
-        for policyId in range(0, 5):
+        if useScanPolicy:
+            ascan.remove_scan_policy(scanpolicyname=scanPolicyName)
+            pprint('Add scan policy ' + scanPolicyName + ' -> ' +
+                   ascan.add_scan_policy(scanpolicyname=scanPolicyName))
+            for policyId in range(0, 5):
                 # Set alert Threshold for all scans
-            ascan.set_policy_alert_threshold(id=policyId,
-                                             alertthreshold=alertThreshold,
-                                             scanpolicyname="my_policy")
+                ascan.set_policy_alert_threshold(id=policyId,
+                                                 alertthreshold=alertThreshold,
+                                                 scanpolicyname=scanPolicyName)
                 # Set attack strength for all scans
-            ascan.set_policy_attack_strength(id=policyId,
-                                             attackstrength=attackStrength,
-                                             scanpolicyname="my_policy")
-        # scanId = zap.ascan.scan(recurse=True, inscopeonly=None,
-        #                         method=None, postdata=True)
-        # print('Start Active scan. Scan ID equals ' + scanId)
-        # while (int(zap.spider.status(id)) < 100):
-        #     print('Active Scan progress: ' + zap.ascan.status(id) + '%')
-        #     time.sleep(5)
-        # print('Active Scan completed')
+                ascan.set_policy_attack_strength(id=policyId,
+                                                 attackstrength=attackStrength,
+                                                 scanpolicyname=scanPolicyName)
+            if isWhiteListPolicy:
+                # Disable all active scanners in order to enable only what you need
+                pprint('Disable all scanners -> ' +
+                       ascan.disable_all_scanners(scanpolicyname=scanPolicyName))
+                # Enable some active scanners
+                pprint('Enable given scan IDs -> ' +
+                       ascan.enable_scanners(ids=ascanIds,
+                                             scanpolicyname=scanPolicyName))
+            else:
+                # Enable all active scanners
+                pprint('Enable all scanners -> ' +
+                       ascan.enable_all_scanners(scanpolicyname=scanPolicyName))
+                # Disable some active scanners
+                pprint('Disable given scan IDs -> ' +
+                       ascan.disable_scanners(ids=ascanIds,
+                                              scanpolicyname=scanPolicyName))
+        else:
+            print('No custom policy used for scan')
+            scanPolicyName = None
 
-    # Give the passive scanner a chance to finish
-        time.sleep(150)
-        sample = zap.core.htmlreport()
-        print(sample)
-        with open('/selenium/reports/test.html', 'w', encoding="utf8") as f:
-            f.write(sample)
+        spider = zap.spider
+        ajax = zap.ajaxSpider
+        scanId = 0
+        print('Starting Scans on target: ' + target)
+
+        scanId = spider.scan(url=target, maxchildren=None, recurse=True,
+                             contextname=None, subtreeonly=None)
+        print('Scan ID equals ' + scanId)
+        # Give the Spider a chance to start
+        time.sleep(2)
+        while (int(spider.status(scanId)) < 100):
+            print('Spider progress ' + spider.status(scanId) + '%')
+            time.sleep(2)
+        print('Spider scan completed')
+        if useAjaxSpider:
+            # Ajax Spider the target URL
+            pprint('Start Ajax Spider -> ' + ajax.scan(url=target, inscope=None))
+            # Give the Ajax spider a chance to start
+            time.sleep(10)
+            while (ajax.status != 'stopped'):
+                print('Ajax Spider is ' + ajax.status)
+                time.sleep(5)
+            # for url in applicationURL:
+            #     # Ajax Spider every url configured
+            #     pprint('Ajax Spider the URL: ' + url + ' -> ' +
+            #            ajax.scan(url=url, inscope=None))
+            #     # Give the Ajax spider a chance to start
+            #     time.sleep(10)
+            #     while (ajax.status != 'stopped'):
+            #         print('Ajax Spider is ' + ajax.status)
+            #         time.sleep(5)
+            print('Ajax Spider scan completed')
+
+        scanId = zap.ascan.scan(url=target, recurse=True, inscopeonly=None,
+                                scanpolicyname=scanPolicyName, method=None, postdata=True)
+        print('Start Active scan. Scan ID equals ' + scanId)
+        while (int(ascan.status(scanId)) < 100):
+            print('Active Scan progress: ' + ascan.status(scanId) + '%')
+            time.sleep(5)
+        print('Active Scan completed')
+
+        time.sleep(10)
+
+        # If you want to retrieve alerts:
+        ## pprint(zap.core.alerts(baseurl=target, start=None, count=None))
+
+        # To retrieve ZAP report in XML or HTML format
+        ## print('XML report')
+        ## core.xmlreport()
+        print('HTML report:')
+        pprint(core.htmlreport())
+
+        if shutdownOnceFinished:
+            # Shutdown ZAP once finished
+            pprint('Shutdown ZAP -> ' + core.shutdown())
+
+
+# ***************************************
+#         scan = zap.spider.scan(url=target,recurse=True)
+#
+#         zap.ascan.scan(url=os.getenv("SITE_URL"),recurse=True)
+#         ascan = zap.ascan
+#
+#         # for id in range(0, 5):
+#         #     ascan.set_scanner_alert_threshold(id=id, alertthreshold=alertThreshold)
+#         #     ascan.set_scanner_attack_strength(id=id, attackstrength=attackStrength)
+#
+#         for policyID in range(0,5):
+#             ascan.set_policy_alert_threshold(id=policyID,alertthreshold=alertThreshold,scanpolicyname="my_policy",apikey="")
+#             ascan.set_scanner_attack_strength(id=policyID,attackstrength=attackStrength,scanpolicyname="my_policy",apikey="")
+#
+#         # scanId = zap.ascan.scan(recurse=True, inscopeonly=None,
+#         #                         method=None, postdata=True)
+#         # print('Start Active scan. Scan ID equals ' + scanId)
+#         # while (int(zap.spider.status(id)) < 100):
+#         #     print('Active Scan progress: ' + zap.ascan.status(id) + '%')
+#         #     time.sleep(5)
+#         # print('Active Scan completed')
+#
+#     # Give the passive scanner a chance to finish
+#         time.sleep(20)
+#         zap.core.htmlreport()
+#         sample = zap.core.htmlreport()
+#         # print(sample)
+#         if(sample):
+#             print("An HTML report has been successfully produced and can be found in the zap container's \'/reports\' "
+#                   "folder and in the local project's \'zap_reports\' folder.")
+#         else:
+#             print("A report has not been produced, please check for errors in the zap container's /home/zap/.ZAP_D/logs/"
+#                   " folder for possible errors.")
