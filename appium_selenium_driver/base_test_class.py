@@ -18,9 +18,6 @@ from import_pages import *
 # log_reports.create_main_logs_dir()
 
 target = os.getenv("SITE_URL")
-alertThreshold = os.getenv("ALERT_THRESHOLD")
-attackStrength = os.getenv("ATTACK_STRENGTH")
-
 desired_caps = selenium_zap_proxy_view
 
 
@@ -61,31 +58,44 @@ class BaseTestClass:
 
     @staticmethod
     def run_zap():
+        alertThreshold = os.getenv("ALERT_THRESHOLD")
+        attackStrength = os.getenv("ATTACK_STRENGTH")
+        desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
+        desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
+        isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
+
         api_key=""
-
         proxy_address = 'http://zap:8081'
-
-
         isNewSession = True
         sessionName = 'Near Test Session'
+        globalExcludeUrl = []
+        useScanPolicy = True
+        scanPolicyName = 'my_policy'
+        pscanIds = []
+        ascanIds=[]
+        useAjaxSpider = True
+        shutdownOnceFinished = False
         # useProxyChain = False
         # useProxyScript = False
         # useContextForScan = False
-        globalExcludeUrl = []
         # You can specify other URL in order to help ZAP discover more site locations
         # List can be empty
         # applicationURL = ['http://localhost:8081/WebGoat/start.mvc',
         #                   'http://localhost:8081/WebGoat/welcome.mvc',
         #                   'http://localhost:8081/WebGoat/attack']
-
-        useScanPolicy = True
-        scanPolicyName = 'my_policy'
-        isWhiteListPolicy = False
-        ascanIds=[]
-        useAjaxSpider = True
-        shutdownOnceFinished = False
-
         zap = ZAPv2(proxies={"http":proxy_address, "https": proxy_address}, apikey=api_key)
+        
+        all_pscan_scanners = zap.pscan.scanners
+        for scanner in desired_passive_scanners:
+            for pscanner in all_pscan_scanners:
+                if scanner in pscanner['name']:
+                    pscanIds.append(pscanner['id'])
+        all_ascan_scanners = zap.ascan.scanners()
+        for scanner in desired_active_scanners:
+            for ascanner in all_ascan_scanners:
+                if scanner in ascanner['name']:
+                    ascanIds.append(ascanner['id'])
+
         core = zap.core
         if isNewSession:
             pprint('Create ZAP session: ' + sessionName + ' -> ' +
@@ -99,9 +109,11 @@ class BaseTestClass:
         for regex in globalExcludeUrl:
             pprint(regex + ' ->' + core.exclude_from_proxy(regex=regex))
 
-        pprint('Enable all passive scanners -> ' +
-               zap.pscan.enable_all_scanners())
+        # pprint('Enable all passive scanners -> ' +
+        #        zap.pscan.enable_all_scanners())
 
+        pprint('Enabling given passive scanner ids -> ' +
+               zap.pscan.enable_scanners(pscanIds))
         ascan = zap.ascan
 
         if useScanPolicy:
