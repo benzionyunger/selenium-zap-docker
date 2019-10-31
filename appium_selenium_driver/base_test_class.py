@@ -65,9 +65,9 @@ class BaseTestClass:
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
         desired_passive_scanners = os.getenv("PASSIVE_SCANNERS").split(',')
-        print(desired_passive_scanners)
         desired_active_scanners = os.getenv("ACTIVE_SCANNERS").split(',')
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
+        isWhiteListPolicy = bool(isWhiteListPolicy)
         # print("desired variable is type " + str(type(desired_passive_scanners)))
         # print("desirde active scanners -> "
         #       + desired_active_scanners)
@@ -119,7 +119,7 @@ class BaseTestClass:
 
         # pprint('Enable all passive scanners -> ' +
         #        zap.pscan.enable_all_scanners())
-
+        pprint('pscan Ids '+ str(pscanIds))
         pprint('Enabling given passive scanner ids -> ' +
                zap.pscan.enable_scanners(pscanIds))
         ascan = zap.ascan
@@ -166,16 +166,16 @@ class BaseTestClass:
                              contextname=None, subtreeonly=None)
         print('Scan ID equals ' + scanId)
         # Give the Spider a chance to start
-        time.sleep(2)
+        time.sleep(10)
         while (int(spider.status(scanId)) < 100):
             print('Spider progress ' + spider.status(scanId) + '%')
-            time.sleep(2)
+            time.sleep(5)
         print('Spider scan completed')
         if useAjaxSpider:
             # Ajax Spider the target URL
             pprint('Start Ajax Spider -> ' + ajax.scan(url=target, inscope=None))
             # Give the Ajax spider a chance to start
-            time.sleep(10)
+            time.sleep(20)
             while (ajax.status != 'stopped'):
                 print('Ajax Spider is ' + ajax.status)
                 time.sleep(5)
@@ -196,6 +196,7 @@ class BaseTestClass:
         while (int(ascan.status(scanId)) < 100):
             print('Active Scan progress: ' + ascan.status(scanId) + '%')
             time.sleep(5)
+        print('Scan ID equals ' + scanId)
         print('Active Scan completed')
 
         time.sleep(10)
