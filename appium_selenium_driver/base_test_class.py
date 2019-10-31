@@ -64,9 +64,9 @@ class BaseTestClass:
         # print(os.environ.values())
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
-        desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
+        desired_passive_scanners = os.getenv("PASSIVE_SCANNERS").split(',')
         print(desired_passive_scanners)
-        desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
+        desired_active_scanners = os.getenv("ACTIVE_SCANNERS").split(',')
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
         # print("desired variable is type " + str(type(desired_passive_scanners)))
         # print("desirde active scanners -> "
