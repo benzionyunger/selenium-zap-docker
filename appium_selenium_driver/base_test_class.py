@@ -63,6 +63,9 @@ class BaseTestClass:
         desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
         desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
+        print("desired variable is type " + type(desired_passive_scanners))
+        print("desirde active scanners -> "
+              + desired_active_scanners)
 
         api_key=""
         proxy_address = 'http://zap:8081'
@@ -84,7 +87,7 @@ class BaseTestClass:
         #                   'http://localhost:8081/WebGoat/welcome.mvc',
         #                   'http://localhost:8081/WebGoat/attack']
         zap = ZAPv2(proxies={"http":proxy_address, "https": proxy_address}, apikey=api_key)
-        
+
         all_pscan_scanners = zap.pscan.scanners
         for scanner in desired_passive_scanners:
             for pscanner in all_pscan_scanners:
