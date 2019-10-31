@@ -118,45 +118,48 @@ class BaseTestClass:
         for regex in globalExcludeUrl:
             pprint(regex + ' ->' + core.exclude_from_proxy(regex=regex))
 
-        # pprint('Enable all passive scanners -> ' +
-        #        zap.pscan.enable_all_scanners())
-        pprint('pscan Ids '+ str(pscanIds))
-        pprint('Enabling given passive scanner ids -> ' +
-               zap.pscan.enable_scanners(pscanIds))
-        ascan = zap.ascan
+        pprint('Enable all passive scanners -> ' +
+               zap.pscan.enable_all_scanners())
 
-        if useScanPolicy:
-            ascan.remove_scan_policy(scanpolicyname=scanPolicyName)
-            pprint('Add scan policy ' + scanPolicyName + ' -> ' +
-                   ascan.add_scan_policy(scanpolicyname=scanPolicyName))
-            for policyId in range(0, 5):
-                # Set alert Threshold for all scans
-                ascan.set_policy_alert_threshold(id=policyId,
-                                                 alertthreshold=alertThreshold,
-                                                 scanpolicyname=scanPolicyName)
-                # Set attack strength for all scans
-                ascan.set_policy_attack_strength(id=policyId,
-                                                 attackstrength=attackStrength,
-                                                 scanpolicyname=scanPolicyName)
-            if isWhiteListPolicy:
-                # Disable all active scanners in order to enable only what you need
-                pprint('Disable all scanners -> ' +
-                       ascan.disable_all_scanners(scanpolicyname=scanPolicyName))
-                # Enable some active scanners
-                pprint('Enable given scan IDs -> ' +
-                       ascan.enable_scanners(ids=ascanIds,
-                                             scanpolicyname=scanPolicyName))
-            else:
-                # Enable all active scanners
-                pprint('Enable all scanners -> ' +
-                       ascan.enable_all_scanners(scanpolicyname=scanPolicyName))
-                # Disable some active scanners
-                pprint('Disable given scan IDs -> ' +
-                       ascan.disable_scanners(ids=ascanIds,
-                                              scanpolicyname=scanPolicyName))
-        else:
-            print('No custom policy used for scan')
-            scanPolicyName = None
+
+
+        # pprint('Enabling given passive scanner ids -> ' +
+        #        zap.pscan.enable_scanners(pscanIds))
+
+        ascan = zap.ascan
+        ascan.enable_all_scanners(apikey=api_key)
+        # if useScanPolicy:
+        #     ascan.remove_scan_policy(scanpolicyname=scanPolicyName)
+        #     pprint('Add scan policy ' + scanPolicyName + ' -> ' +
+        #            ascan.add_scan_policy(scanpolicyname=scanPolicyName))
+        #     for policyId in range(0, 5):
+        #         # Set alert Threshold for all scans
+        #         ascan.set_policy_alert_threshold(id=policyId,
+        #                                          alertthreshold=alertThreshold,
+        #                                          scanpolicyname=scanPolicyName)
+        #         # Set attack strength for all scans
+        #         ascan.set_policy_attack_strength(id=policyId,
+        #                                          attackstrength=attackStrength,
+        #                                          scanpolicyname=scanPolicyName)
+        #     if isWhiteListPolicy:
+        #         # Disable all active scanners in order to enable only what you need
+        #         pprint('Disable all scanners -> ' +
+        #                ascan.disable_all_scanners(scanpolicyname=scanPolicyName))
+        #         # Enable some active scanners
+        #         pprint('Enable given scan IDs -> ' +
+        #                ascan.enable_scanners(ids=ascanIds,
+        #                                      scanpolicyname=scanPolicyName))
+        #     else:
+        #         # Enable all active scanners
+        #         pprint('Enable all scanners -> ' +
+        #                ascan.enable_all_scanners(scanpolicyname=scanPolicyName))
+        #         # Disable some active scanners
+        #         pprint('Disable given scan IDs -> ' +
+        #                ascan.disable_scanners(ids=ascanIds,
+        #                                       scanpolicyname=scanPolicyName))
+        # else:
+        #     print('No custom policy used for scan')
+        #     scanPolicyName = None
 
         spider = zap.spider
         ajax = zap.ajaxSpider
