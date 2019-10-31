@@ -60,7 +60,6 @@ class BaseTestClass:
     @staticmethod
     def run_zap():
         printenv = subprocess.check_output('printenv', shell=True, stderr=subprocess.STDOUT)
-        printenv2 = subprocess.run('printenv',stdout=subprocess.STDOUT).stdout
 
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
