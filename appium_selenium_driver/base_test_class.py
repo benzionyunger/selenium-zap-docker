@@ -59,8 +59,9 @@ class BaseTestClass:
 
     @staticmethod
     def run_zap():
-        printenv = subprocess.check_output('printenv', shell=True, stderr=subprocess.STDOUT)
-
+        printenv = subprocess.check_output('env', shell=True, stderr=subprocess.STDOUT)
+        print(os.environ.keys())
+        print(os.environ.values())
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
         desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
