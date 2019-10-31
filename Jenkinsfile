@@ -22,8 +22,8 @@ pipeline {
                     sh "docker kill zap selenium-server python-tests || true"
                     sh "docker system prune -af"
                     sh "docker-compose -f ./docker/docker-compose-ci.yml up -d"
-                    sh "docker logs python-tests"
                     sh "docker wait python-tests"
+                    sh "docker logs --details python-tests"
                     sh "docker-compose -f ./docker/docker-compose-ci.yml down"
 
                     publishHTML([
