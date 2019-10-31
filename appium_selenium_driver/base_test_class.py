@@ -1,5 +1,6 @@
 import os
 import time
+import subprocess
 from pprint import pprint
 from appium_selenium_driver.appium_selenium_driver import Driver
 from appium_selenium_driver.desired_capabilities.selenium_desired_capabilities import *
@@ -58,14 +59,15 @@ class BaseTestClass:
 
     @staticmethod
     def run_zap():
+        subprocess.check_output("printenv", shell=True)
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
         desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
         desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
-        print("desired variable is type " + str(type(desired_passive_scanners)))
-        print("desirde active scanners -> "
-              + desired_active_scanners)
+        # print("desired variable is type " + str(type(desired_passive_scanners)))
+        # print("desirde active scanners -> "
+        #       + desired_active_scanners)
 
         api_key=""
         proxy_address = 'http://zap:8081'
