@@ -103,7 +103,8 @@ class BaseTestClass:
             for ascanner in all_ascan_scanners:
                 if scanner in ascanner['name']:
                     ascanIds.append(ascanner['id'])
-
+        pscanIds = ",".join(pscanIds)
+        ascanIds = ",".join(ascanIds)
         core = zap.core
         if isNewSession:
             pprint('Create ZAP session: ' + sessionName + ' -> ' +
