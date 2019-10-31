@@ -59,13 +59,13 @@ class BaseTestClass:
 
     @staticmethod
     def run_zap():
-        printenv = subprocess.check_output('env', shell=True, stderr=subprocess.STDOUT)
-        print(os.environ.keys())
-        print(os.environ.values())
+        # printenv = subprocess.check_output('env', shell=True, stderr=subprocess.STDOUT)
+        # print(os.environ.keys())
+        # print(os.environ.values())
         alertThreshold = os.getenv("ALERT_THRESHOLD")
         attackStrength = os.getenv("ATTACK_STRENGTH")
-        desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
-        desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
+        desired_passive_scanners = os.getenv("PASSIVE_SCANNERS").split(',')
+        desired_active_scanners = os.getenv("ACTIVE_SCANNERS").split(',')
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
         # print("desired variable is type " + str(type(desired_passive_scanners)))
         # print("desirde active scanners -> "
