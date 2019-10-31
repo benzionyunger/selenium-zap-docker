@@ -63,7 +63,7 @@ class BaseTestClass:
         desired_passive_scanners = os.getenv("PASSIVE_SCANNERS")
         desired_active_scanners = os.getenv("ACTIVE_SCANNERS")
         isWhiteListPolicy = os.getenv("WHITELIST_POLICY")
-        print("desired variable is type " + type(desired_passive_scanners))
+        print("desired variable is type " + str(type(desired_passive_scanners)))
         print("desirde active scanners -> "
               + desired_active_scanners)
 
